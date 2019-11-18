@@ -91,7 +91,7 @@ app.post('/search', function (req, res, next) {
                         var showTime = Date.parse(currentDate + ' ' + time);
                         var userEnterTime = Date.parse(currentDate + ' ' + task.movie_time + '+11:00');
                         if (showTime > userEnterTime) {
-                            finalData[rating] = { name: name, time: dateformat(showTime, 'h:MM TT'), rating: rating }
+                            finalData[rating] = { name: name, time: time, rating: rating }
                         }
                     });
                     // var tt = times.filter(time => time == '20:30:00+11:00')
