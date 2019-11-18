@@ -3,6 +3,7 @@
 ## Table of Contents
 
 - [Installation](#installation)
+- [Run](#run)
 
 
 ### Installation
@@ -20,4 +21,11 @@ $ cd movie-search-nodejs
 3. Install npm dependencies
 ```
 $ npm install
+```
+
+### Run
+
+1. Run the project
+```
+$ nodemon app.js
 ```

@@ -2,6 +2,9 @@ var express = require('express')
 var app = express()
 var http = require('http')
 var async = require("async")
+const moment = require('moment')
+const dateformat = require('dateformat')
+
 
 // SHOW Search Movie FORM
 app.get('/', function (req, res, next) {
@@ -75,12 +78,20 @@ app.post('/search', function (req, res, next) {
                 var name = item.name;
                 // console.log(genres);
                 var genreArray = genres.filter(word => word.toLowerCase() == task.movie_name.toLowerCase());
-                if (genreArray) {
+                if (genreArray.length > 0) {
                     var times = item.showings;
                     times.forEach(function (time) {
                         //     //console.log(time);
-                        if (time == '20:30:00+11:00') {
-                            finalData[rating] = { name: name, time: time }
+                        var todayDate = new Date();
+                        var currentDay = todayDate.getDate();
+                        var currentMonth = todayDate.getMonth() + 1;
+                        var currentYear = todayDate.getFullYear();
+                        var currentDate = currentYear + '-' + currentMonth + '-' + currentDay
+
+                        var showTime = Date.parse(currentDate + ' ' + time);
+                        var userEnterTime = Date.parse(currentDate + ' ' + task.movie_time + '+11:00');
+                        if (showTime > userEnterTime) {
+                            finalData[rating] = { name: name, time: dateformat(showTime, 'h:MM TT'), rating: rating }
                         }
                     });
                     // var tt = times.filter(time => time == '20:30:00+11:00')
@@ -89,13 +100,17 @@ app.post('/search', function (req, res, next) {
                     // }
                 }
             });
+            finalData.sort(function (a, b) {
+                var x = a['rating']; var y = b['rating'];
+                return ((x < y) ? -1 : ((x > y) ? 0 : 1));
+            });
             console.log(finalData);
 
             // render to views/user/list.ejs template file
             res.render('search', {
                 title: 'Movie List',
-                movie_name: '',
-                movie_time: '',
+                movie_name: task.movie_name,
+                movie_time: task.movie_time,
                 data: finalData
             })
         })('https://pastebin.com/raw/cVyp3McN');
