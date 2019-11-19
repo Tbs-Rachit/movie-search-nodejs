@@ -27,5 +27,5 @@ $ npm install
 
 1. Run the project
 ```
-$ nodemon app.js
+$ node app.js
 ```
