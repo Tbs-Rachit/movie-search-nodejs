@@ -22,8 +22,8 @@ including header content which is common for all pages
             <td>
                 <select style="width: 170px;" name="movie_time" id="movie_time">
                     <% for(var i = 0; i < 24;i++){ %>
-                    <option value="<%=i%>:00"><%=i%>:00</option>
-                    <option value="<%=i%>:30"><%=i%>:30</option>
+                    <option value="<%=i%>:00" <% if(movie_time == i+':00'){ %> selected <% } %>><%=i%>:00</option>
+                    <option value="<%=i%>:30" <% if(movie_time == i+':30'){ %> selected <% } %>><%=i%>:30</option>
                     <% } %>
                 </select>
             </td>
