@@ -20,6 +20,7 @@ app.get('/', function (req, res, next) {
 // Search Movie POST ACTION
 app.post('/search', function (req, res, next) {
     req.assert('movie_name', 'Movie Name is required').notEmpty()
+    req.assert('movie_time', 'Movie time is required').notEmpty()
 
     var errors = req.validationErrors()
 
@@ -135,6 +136,94 @@ app.post('/search', function (req, res, next) {
             data: ''
         })
     }
+})
+
+
+// Search Movie POST ACTION
+app.post('/api/search', function (req, res) {
+    console.log(req)
+    //No errors were found.  Passed Validation!
+    var task = {
+        movie_name: 'Comedy',
+        movie_time: '15:30'
+    }
+    var result = []
+    var finalData = []
+    const getScript = (url) => {
+        return new Promise((resolve, reject) => {
+            const http = require('http'),
+                https = require('https');
+
+            let client = http;
+
+            if (url.toString().indexOf("https") === 0) {
+                client = https;
+            }
+
+            client.get(url, (resp) => {
+                let data = '';
+
+                // A chunk of data has been recieved.
+                resp.on('data', (chunk) => {
+                    data += chunk;
+                });
+
+                // The whole response has been received. Print out the result.
+                resp.on('end', () => {
+                    resolve(data);
+                });
+
+            }).on("error", (err) => {
+                reject(err);
+            });
+        });
+    };
+
+    (async (url) => {
+        result = JSON.parse(await getScript(url));
+        result.forEach(function (item) {
+            var genres = item.genres;
+            var rating = item.rating;
+            var name = item.name;
+            // console.log(genres);
+            var genreArray = genres.filter(word => word.toLowerCase() == task.movie_name.toLowerCase());
+            if (genreArray.length > 0) {
+                var times = item.showings;
+                times.forEach(function (time) {
+                    //     //console.log(time);
+                    var todayDate = new Date();
+                    var currentDay = todayDate.getDate();
+                    var currentMonth = todayDate.getMonth() + 1;
+                    var currentYear = todayDate.getFullYear();
+                    var currentDate = currentYear + '-' + currentMonth + '-' + currentDay
+
+                    var showTime = Date.parse(currentDate + ' ' + time);
+                    var userEnterTime = Date.parse(currentDate + ' ' + task.movie_time + '+11:00');
+                    if (showTime > userEnterTime) {
+                        var nArray = { name: name, time: time, rating: rating };
+                        if (nArray != null) {
+                            finalData.push(nArray)
+                            //console.log(finalData);
+                            return true;
+                        }
+                    }
+                });
+                // var tt = times.filter(time => time == '20:30:00+11:00')
+                // if (tt) {
+                //     finalData[rating] = { name: name, time: tt }
+                // }
+            }
+        });
+        //console.log(finalData);
+        finalData.sort(function (a, b) {
+            var x = a['rating']; var y = b['rating'];
+            return ((x < y) ? -1 : ((x > y) ? 0 : 1));
+        });
+        console.log(finalData);
+        const { post } = finalData;
+        return res.status(200).json({ post });
+    })('https://pastebin.com/raw/cVyp3McN');
+    //rdata = getScript('https://pastebin.com/raw/cVyp3McN');
 })
 
 /** 

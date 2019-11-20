@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start-dev": "nodemon app.js",
+    "test": "cross-env NODE_ENV=test jest --testTimeout=10000",
+    "coverage": "npm run jest --coverage && cat ./lcov.info | coveralls"
   },
   "author": "",
   "license": "ISC",
@@ -22,5 +24,17 @@
     "moment": "^2.24.0",
     "mysql": "^2.15.0",
     "nodemon": "^1.19.4"
+  },
+  "devDependencies": {
+    "cross-env": "^6.0.3",
+    "jest": "^24.9.0",
+    "supertest": "^4.0.2"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "coveragePathIgnorePatterns": [
+      "/node_modules/"
+    ],
+    "verbose": true
   }
 }

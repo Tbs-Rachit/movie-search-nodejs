@@ -4,6 +4,7 @@
 
 - [Installation](#installation)
 - [Run](#run)
+- [Test](#test)
 
 
 ### Installation
@@ -28,4 +29,11 @@ $ npm install
 1. Run the project
 ```
 $ node app.js
+```
+
+### Test
+
+1. Run the test
+```
+$ node test
 ```
